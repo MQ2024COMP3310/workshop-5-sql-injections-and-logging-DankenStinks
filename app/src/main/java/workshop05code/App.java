@@ -38,15 +38,15 @@ public class App {
 
         wordleDatabaseConnection.createNewDatabase("words.db");
         if (wordleDatabaseConnection.checkIfConnectionDefined()) {
-            System.out.println("Wordle created and connected.");
+            //System.out.println("Wordle created and connected.");
         } else {
-            System.out.println("Not able to connect. Sorry!");
+            //System.out.println("Not able to connect. Sorry!");
             return;
         }
         if (wordleDatabaseConnection.createWordleTables()) {
-            System.out.println("Wordle structures in place.");
+            //System.out.println("Wordle structures in place.");
         } else {
-            System.out.println("Not able to launch. Sorry!");
+            //System.out.println("Not able to launch. Sorry!");
             return;
         }
 
@@ -55,15 +55,18 @@ public class App {
         try (BufferedReader br = new BufferedReader(new FileReader("resources/data.txt"))) {
             String line;
             int i = 1;
+            if ((line = br.readLine()) == null){
+                logger.log(Level.SEVERE, "word from file:" + line + "is invalid");
+            }
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
+                //System.out.println(line);
                 wordleDatabaseConnection.addValidWord(i, line);
                 i++;
             }
 
         } catch (IOException e) {
-            System.out.println("Not able to load . Sorry!");
-            System.out.println(e.getMessage());
+            //System.out.println("Not able to load . Sorry!");
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
 
@@ -79,6 +82,7 @@ public class App {
                 if (wordleDatabaseConnection.isValidWord(guess)) { 
                     System.out.println("Success! It is in the the list.\n");
                 }else{
+                    logger.log(Level.INFO, "guess" + guess + "was made");
                     System.out.println("Sorry. This word is NOT in the the list.\n");
                 }
 
@@ -86,8 +90,7 @@ public class App {
                 guess = scanner.nextLine();
             }
         } catch (NoSuchElementException | IllegalStateException e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, e.toString());
         }
-
     }
 }
